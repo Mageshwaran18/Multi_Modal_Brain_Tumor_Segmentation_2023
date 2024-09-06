@@ -2,8 +2,8 @@ BraTS 2023 Steps to be Done
 
 * Download the data --> Done 
 * Extract the data --> Done
-* Setup Environment & GitHub
-* Documentation 
+* Setup Environment & GitHub --> Done
+* Documentation --> Done
 * Iterate through every data and find that each patients have their own 4 modalities and their segmentation ( Both Training & Validation )
 * Visualize a sample both 4 files & Segmentation , their pixel values maximum to minimum 
 * Data Pre Processing
