@@ -1,0 +1,7 @@
+# Ignore the BraTS_2023.zip file
+BraTS2020.zip
+
+# Ignore the BTS_2023_DS folder and its contents
+BraTS2020/
+Archives/
+TrainingData/
