@@ -22,29 +22,40 @@ def main():
     uploaded_files = st.file_uploader("Choose four .nii files", type="nii", accept_multiple_files=True)
 
     if uploaded_files and len(uploaded_files) == 4:
-        st.write("Input Images")
+        st.write("Input Images with Segmentation Overlay")
 
-        # Display each uploaded NIfTI file horizontally
         slice_num = st.slider("Select Slice Number", 0, 100, 50)  # Slider to choose which slice to display
         columns = st.columns(4)  # Create 4 columns for horizontal layout
 
+        # Load segmentation first
+        segmented_path = r"D:/MMBTS_2020/BraTS2020/BraTS2020_TrainingData/MICCAI_BraTS2020_TrainingData/BraTS20_Training_001/BraTS20_Training_001_seg.nii"
+        segmented_slice = load_nii_slice(open(segmented_path, 'rb'), slice_num=slice_num)
+
+        # Create segmentation mask with colors
+        colors = {
+            0: [0, 0, 0, 0],      # background (transparent)
+            1: [1, 0, 0, 0.5],    # red with 50% transparency
+            2: [0, 1, 0, 0.5],    # green with 50% transparency
+            4: [0, 0, 1, 0.5]     # blue with 50% transparency
+        }
+
+        # Create RGBA segmentation overlay
+        seg_overlay = np.zeros((*segmented_slice.T.shape, 4))
+        for label, color in colors.items():
+            seg_overlay[segmented_slice.T == label] = color
+
         for i, file in enumerate(uploaded_files):
             img_slice = load_nii_slice(file, slice_num=slice_num)
-            fig, ax = plt.subplots()
+            fig, ax = plt.subplots(figsize=(8, 8))
+            
+            # Display the original brain image
             ax.imshow(img_slice.T, cmap="gray", origin="lower")
+            
+            # Overlay the segmentation
+            ax.imshow(seg_overlay, origin="lower")
+            
             ax.axis('off')  # Turn off axis to make it cleaner
             columns[i].pyplot(fig)  # Display each image in its own column
-
-        # Display the preloaded segmented file
-        st.header("Segmented Image")
-        segmented_path = segmented_path = r"D:/MMBTS_2020/BraTS2020/BraTS2020_TrainingData/MICCAI_BraTS2020_TrainingData/BraTS20_Training_001/BraTS20_Training_001_seg.nii"
-        
-        if segmented_path:
-            segmented_slice = load_nii_slice(open(segmented_path, 'rb'), slice_num=slice_num)
-            fig, ax = plt.subplots(figsize=(4, 4))  # Reduced size of the figure for segmented image
-            ax.imshow(segmented_slice.T, cmap="gray", origin="lower")
-            ax.axis('off')  # Hide the axis
-            st.pyplot(fig)
 
     elif len(uploaded_files) != 4:
         st.warning("Please upload exactly 4 NIfTI files.")
