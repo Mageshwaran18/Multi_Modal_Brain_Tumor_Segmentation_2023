@@ -1,0 +1,10 @@
+
+The input images are taken and reshaped and normalized 
+
+
+test_image_t1ce=nib.load(TRAIN_DATASET_PATH + "BraTS20_Training_355/BraTS20_Training_355_t1ce.nii").get_fdata()
+test_image_t1ce=scaler.fit_transform(test_image_t1ce.reshape(-1, test_image_t1ce.shape[-1])).reshape(test_image_t1ce.shape)
+
+We only take flair , t1ce , t2 and stack them one on another 
+
+Crop the incoming images from 56:184 , 56:184 , 13:141 with the dimension of 128 x 128 x 128
