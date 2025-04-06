@@ -1,3 +1,5 @@
+test.py
+summa.py
 # Ignore the BraTS_2023.zip file
 BraTS2020.zip
 
@@ -6,5 +8,3 @@ BraTS2020/
 Archives/
 TrainingData/
 
-test.py
-summa.py
