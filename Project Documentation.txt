@@ -2,7 +2,55 @@ Project Documentation :-
 
 Problem Statement :-
 
+The goal is to segment brain tumors from MRI scans using deep learning. Each scan is multimodal, offering multiple views of the same brain region, each with unique imaging characteristics. The objective is to identify and classify different tumor regions accurately.
+
+
 Data Set information :-
+
+Dataset Link :- https://www.kaggle.com/datasets/awsaf49/brats2020-training-data
+
+These are .nii files and are 3D format.
+
+These are multimodal scans.
+Multimodal → 4 different views from the same region (i.e. image with different modality).
+
+Modality refers to different types of imaging techniques to retrieve different information.
+Ex: For one modality might focus on brain's structure, while other focuses on blood flow.
+
+Annotations:
+
+Label 0 → Unlabeled volume
+
+Label 1 → Necrotic & non-enhancing tumor
+
+Necrotic → Tumor that has died due to lack of blood supply
+
+Non-enhancing tumor → Less aggressive tumor tissue that are likely to respond to certain treatments
+
+Label 2 → Peritumoral edema
+
+Peritumoral edema → Fluid around the tumor
+
+Label 4 → GD-enhancing tumor
+
+Aggressive part of the tumor
+
+Label 3 → No pixels
+∴ We need to reassign the label 3 to label 4.
+
+We have 4 modalities:
+
+T1 → Brain anatomy, difference b/w the grey and white matter
+
+T1CE → Where the blood-brain barrier might be damaged, such as tumors or inflammation
+
+T2 weighted → Highlights the cerebrospinal fluid and identifies areas of abnormal fluid accumulations (edema)
+
+FLAIR → Removes cerebrospinal fluid to make abnormalities in brain visible
+
+We are not using the T1 as we get more additional features from the T1CE + T2 information
+
+All the dataset were manually segmented and approved by the neuro radiologists.
 
 Data Preprocessing :- 
 
@@ -37,7 +85,7 @@ These steps are performed for the entire data set and found 344 valid data in th
 
 Custom data generator :- 
 
-Why custom data generator ?
+Why custom data generator ? Default keras data generator doesn't handle the npy.arrays. And we are handling the npy arrays. So we are creating an custom data generator which loads the data into the model for training. 
 
 So at the end the custom data generator will help you yield a set of batch for training and each batch contains (a image , respective mask) the structure of the batch would be [(1,height,width,channels),(1,height,width,channels)] [ if batch_size=1 , and in the shape 1 represent the batch size ].
 
@@ -87,6 +135,38 @@ Adam optimizer adjusts learning rates automatically for better convergence.
 
 
 Defining the Architecture :- 
+
+Relu --> Activation function for the architecture to avoid vanishing gradient descent problem 
+
+he_uniform --> A specific weight initialization techniques working well along with the ReLU
+
+MaxPooling3D --> Used to reduce the spatial dimension of the input volume while maintaining only the important features. 
+
+
+U-Net Architecture :- [ To have a detailed Understanding about the U-Net and also the Implementation refer the Notebook ]
+
+U-Net is a deep learning model used mainly for image segmentation, where the goal is to classify each pixel in an image.
+
+Encoder -> Down Sampling using Convolutional layers by detecting patterns
+
+Decoder -> Up Sampling using the Transposed convolutional layers with the help of skip connections ( encoder's feature ) 
+
+Skip Connections -> Connects the encoder layer to the decoder layer. Helps to preserve spatial information lost during the down sampling.
+
+Metrics after training :- 
+
+- Accuracy: 98.50%
+- IOU Score: 0.6946
+- Dice Loss: 0.8059
+- Mean IOU: 0.5183
+
+
+Saving the model :- 
+
+.h5 format: Traditional format storing both model and architecture.
+
+TensorFlow (.tf) format: Useful for deployment and portability.
+
 
 
 
