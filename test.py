@@ -138,7 +138,7 @@ def main():
         total_loss, metrics = get_loss_and_metrics()
         model.compile(optimizer='adam', loss=total_loss, metrics=metrics)
         try:
-            model.load_weights("D:\MMBTS_2020\Trained_Model\Trained_Model.hdf5")
+            model.load_weights(r"D:\MMBTS_2020\Trained_Model\newly_trianed_model_without_optimizers.h5")
         except:
             st.error("Could not load model weights. Please ensure the weights file is in the correct location.")
             return None
@@ -187,7 +187,7 @@ def main():
                     
                     # Display segmentation overlay
                     fig, ax = plt.subplots()
-                    ax.imshow(prediction[0, :, :, slice_num])
+                    ax.imshow(prediction[0, :, :, slice_num] , cmap='gray')
                     ax.set_title('Segmentation')
                     ax.axis('off')
                     cols[3].pyplot(fig)
